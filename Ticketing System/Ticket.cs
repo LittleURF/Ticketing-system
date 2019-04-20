@@ -14,7 +14,7 @@ namespace Ticketing_System
 
         public void DisplayTicket()
         {
-            Console.WriteLine($"Ticket ID: {TicketID}, Creator ID: {CreatorID}\n{Title}\n{Description}\n{CreationDate}");
+            Console.WriteLine($"Ticket ID: {TicketID}, Creator ID: {CreatorID}\n{Title}\n{Description}\n{CreationDate}\n");
         }
     }
 }

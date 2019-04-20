@@ -11,6 +11,10 @@ namespace Ticketing_System
     {
         static void Main(string[] args)
         {
+            var db = new TicketsDB();
+            var mainTicket = db.GetTicket(1);
+            mainTicket.DisplayTicket();
+
         }
     }
 }
