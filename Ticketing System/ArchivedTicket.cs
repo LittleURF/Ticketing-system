@@ -7,7 +7,7 @@ namespace Ticketing_System
         public int ArchivisationID { get; set; }
         public DateTime FinishedDate { get; set; }
 
-        public void DisplayTicket()
+        public override void  DisplayTicket()
         {
             Console.WriteLine($"Archivisation ID: {ArchivisationID}, Ticket ID: {TicketID}, Creator ID: {CreatorID}\n{Title}\n{Description}\n{CreationDate} - {FinishedDate}\n");
         }

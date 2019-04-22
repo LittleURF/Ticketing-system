@@ -1,10 +1,12 @@
 ﻿using Dapper;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
 namespace Ticketing_System
 {
+
     public class Ticket
     {
         public int TicketID { get; set; }
@@ -17,7 +19,7 @@ namespace Ticketing_System
         private readonly ITicketsDBConnection _connectionMaker = new TicketsDBConnection();
 
 
-        public void DisplayTicket()
+        public virtual void DisplayTicket()
         {
             Console.WriteLine($"Ticket ID: {TicketID}, Creator ID: {CreatorID}\n{Title}\n{Description}\n{CreationDate}\n");
         }
@@ -79,5 +81,6 @@ namespace Ticketing_System
 
             ExecuteQuery(query, parameters);
         }
+
     }
 }

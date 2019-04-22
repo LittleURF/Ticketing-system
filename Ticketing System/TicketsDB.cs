@@ -23,8 +23,10 @@ namespace Ticketing_System
          
         }
 
-        public List<Ticket> ReturnQueryList(string query)
+        public List<Ticket> GetOpenTickets()
         {
+            string query = "SELECT TicketID, CreatorID, Title, Description, CreationDate, isFinished FROM Tickets";
+
             using (var connection = _connectionMaker.GetConnection())
             {
                 connection.Open();
@@ -32,22 +34,26 @@ namespace Ticketing_System
             }
         }
 
-        public List<Ticket> GetOpenTickets()
+        public List<ArchivedTicket> GetArchivedTickets()
         {
-            string query = "SELECT TicketID, CreatorID, Title, Description, CreationDate, isFinished FROM Tickets";
+            string query = "SELECT ArchivisationID, TicketID, CreatorID, Title, Description, CreationDate, FinishedDate FROM TicketsArchived";
 
-            return ReturnQueryList(query);
-        }
-
-        public List<Ticket> GetArchivedTickets()
-        {
-            string query = "SELECT TicketID, CreatorID, Title, Description, CreationDate FROM TicketsArchived";
-
-            return ReturnQueryList(query);
+            using (var connection = _connectionMaker.GetConnection())
+            {
+                connection.Open();
+                return connection.Query<ArchivedTicket>(query).AsList();
+            }
 
         }
 
+        public List<Ticket> GetAllTickets()
+        {
+            var allTickets = new List<Ticket>();
+            allTickets.AddRange(GetOpenTickets());
+            allTickets.AddRange(GetArchivedTickets());
 
+            return allTickets;
+        }
 
 
     }

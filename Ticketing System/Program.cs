@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,13 +30,23 @@ namespace Ticketing_System
             {
                 ticket.DisplayTicket();
             }
+
+            Console.WriteLine("\n\n\n");
+            var allTickets = db.GetAllTickets();
+
+            foreach (var ticket in allTickets)
+            {
+                ticket.DisplayTicket();
+            }
+
+
            // db.AddTicket(1, "Fix connection issues", "I cant get the damn app to open on my tablet");
 
 
 
 
             /* Functionalities to add:
-             * - Getting all archived tickets
+             * - getting all tickets
              * - Modifying title or description
              * - Getting all tickets made by a specific employee, open/archived or both
              * 
