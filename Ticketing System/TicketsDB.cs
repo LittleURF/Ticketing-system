@@ -6,67 +6,48 @@ using Dapper;
 
 namespace Ticketing_System
 {
-
-    public  class TicketsDB : ITicketsDB
+    public class TicketsDB 
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["Tickets"].ConnectionString;
+        private readonly TicketsDBConnection _connectionMaker = new TicketsDBConnection();
 
 
         public Ticket GetTicket(int ticketID)
         {
             string query = "SELECT TicketID, CreatorID, Title, Description, CreationDate, isFinished FROM Tickets WHERE TicketID = @ticketID";
-            using (SqlConnection _connection = new SqlConnection(_connectionString))
+            using (var connection = _connectionMaker.GetConnection())
             {
-                _connection.Open();
-               return _connection.QuerySingle<Ticket>(query, new { TicketID = ticketID });
+               connection.Open();
+               return connection.QuerySingle<Ticket>(query, new { TicketID = ticketID });
                 
             }
          
         }
 
-        public List<Ticket> GetAllTickets()
+        public List<Ticket> ReturnQueryList(string query)
+        {
+            using (var connection = _connectionMaker.GetConnection())
+            {
+                connection.Open();
+                return connection.Query<Ticket>(query).AsList();
+            }
+        }
+
+        public List<Ticket> GetOpenTickets()
         {
             string query = "SELECT TicketID, CreatorID, Title, Description, CreationDate, isFinished FROM Tickets";
-            using (SqlConnection _connection = new SqlConnection(_connectionString))
-            {
-                _connection.Open();
-                return _connection.Query<Ticket>(query).AsList();
-            }
+
+            return ReturnQueryList(query);
         }
 
-        // Make adding parameters and executing query into a different method to avoid repetition
-        public void AddTicket(int creatorID, string title, string description)
+        public List<Ticket> GetArchivedTickets()
         {
-            string query = "INSERT INTO Tickets(CreatorID, Title, Description, CreationDate) VALUES (@CreatorID, @Title, @Description, @CreationDate);";
+            string query = "SELECT TicketID, CreatorID, Title, Description, CreationDate FROM TicketsArchived";
 
-            DynamicParameters parameters = new DynamicParameters();
+            return ReturnQueryList(query);
 
-            parameters.Add("@CreatorID", creatorID);
-            parameters.Add("@Title", title);
-            parameters.Add("@Description", description);
-            parameters.Add("@CreationDate", DateTime.Now);
-
-            using (SqlConnection _connection = new SqlConnection(_connectionString))
-            {
-                _connection.Open();
-                _connection.Execute(query, parameters);
-            }
         }
 
-        public void FinishTicket(int ticketID)
-        {
-            string query = "UPDATE Tickets SET IsFinished = 1 WHERE TicketID = @TicketID";
 
-            DynamicParameters parameters = new DynamicParameters();
-
-            parameters.Add("TicketID", ticketID);
-
-            using (SqlConnection _connection = new SqlConnection(_connectionString))
-            {
-                _connection.Open();
-                _connection.Execute(query, parameters);
-            }
-        }
 
 
     }

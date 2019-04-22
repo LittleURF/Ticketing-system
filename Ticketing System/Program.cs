@@ -12,24 +12,37 @@ namespace Ticketing_System
         static void Main(string[] args)
         {
             var db = new TicketsDB();
-            var mainTicket = db.GetTicket(1);
+            var mainTicket = db.GetTicket(6);
             mainTicket.DisplayTicket();
 
-            mainTicket.FinishTicket();
+            // mainTicket.FinishTicket();
 
-            var allTickets = db.GetAllTickets();
-
-            foreach (var ticket in allTickets)
+            var openTickets = db.GetOpenTickets();
+            foreach (var ticket in openTickets)
             {
                 ticket.DisplayTicket();
             }
 
-            //db.AddTicket(3, "Fix connection issues", "Iphone users cant connect whenever they have the paint app open");
+            Console.WriteLine("\n" + mainTicket.GetCreatorName() + "\n\n");
+
+            var archivedTickets = db.GetArchivedTickets();
+
+            foreach (var ticket in archivedTickets)
+            {
+                ticket.DisplayTicket();
+            }
+           // db.AddTicket(1, "Fix connection issues", "I cant get the damn app to open on my tablet");
 
 
 
 
-            /*
+            /* Functionalities to add:
+             * - Getting all archived tickets
+             * - Modifying title or description
+             * - Getting all tickets made by a specific employee, open/archived or both
+             * 
+             * 
+             * 
              * actualy creating a ticket in C# instead is gonna screw everything up, make it impossible to create one just liek that?
              * 
              * 
