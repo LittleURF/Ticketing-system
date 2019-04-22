@@ -11,10 +11,18 @@ namespace Ticketing_System
         public DateTime CreationDate { get; set; }
         public bool IsFinished { get; set; }
 
+        // does that make any sense? i think it does
+        public ITicketsDB db = new TicketsDB();
+
 
         public void DisplayTicket()
         {
             Console.WriteLine($"Ticket ID: {TicketID}, Creator ID: {CreatorID}\n{Title}\n{Description}\n{CreationDate}\n");
+        }
+
+        public void FinishTicket()
+        {
+            db.FinishTicket(TicketID);
         }
     }
 }

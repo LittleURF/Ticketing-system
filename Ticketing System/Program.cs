@@ -15,6 +15,25 @@ namespace Ticketing_System
             var mainTicket = db.GetTicket(1);
             mainTicket.DisplayTicket();
 
+            mainTicket.FinishTicket();
+
+            var allTickets = db.GetAllTickets();
+
+            foreach (var ticket in allTickets)
+            {
+                ticket.DisplayTicket();
+            }
+
+            //db.AddTicket(3, "Fix connection issues", "Iphone users cant connect whenever they have the paint app open");
+
+
+
+
+            /*
+             * actualy creating a ticket in C# instead is gonna screw everything up, make it impossible to create one just liek that?
+             * 
+             * 
+             */
         }
     }
 }
