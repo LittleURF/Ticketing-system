@@ -14,6 +14,7 @@ namespace Ticketing_System
             var mainTicket = db.GetTicket(6);
             mainTicket.DisplayTicket();
 
+            mainTicket.ModifyDescription("I cant play candy crush when connected to my boys wi-fi");
             // mainTicket.FinishTicket();
 
             var openTickets = db.GetOpenTickets();
@@ -46,8 +47,6 @@ namespace Ticketing_System
 
 
             /* Functionalities to add:
-             * - getting all tickets
-             * - Modifying title or description
              * - Getting all tickets made by a specific employee, open/archived or both
              * 
              * 

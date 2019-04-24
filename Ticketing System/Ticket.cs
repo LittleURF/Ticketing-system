@@ -56,31 +56,46 @@ namespace Ticketing_System
         }
 
 
-        public void AddTicket(int creatorID, string title, string description)
-        {
-            string query = "INSERT INTO Tickets(CreatorID, Title, Description, CreationDate) VALUES (@CreatorID, @Title, @Description, @CreationDate);";
-
-            DynamicParameters parameters = new DynamicParameters();
-
-            parameters.Add("@CreatorID", creatorID);
-            parameters.Add("@Title", title);
-            parameters.Add("@Description", description);
-            parameters.Add("@CreationDate", DateTime.Now);
-
-            ExecuteQuery(query, parameters);
-        }
 
 
-        public void FinishTicket(int ticketID)
+        public void FinishTicket()
         {
             string query = "UPDATE Tickets SET IsFinished = 1 WHERE TicketID = @TicketID";
 
             DynamicParameters parameters = new DynamicParameters();
 
-            parameters.Add("TicketID", ticketID);
+            parameters.Add("TicketID", this.TicketID);
 
             ExecuteQuery(query, parameters);
         }
+        
 
+        private void Modify(string query, string newValue)
+        {
+            if (String.IsNullOrWhiteSpace(newValue))
+                throw new ArgumentNullException();
+
+            DynamicParameters parameters = new DynamicParameters();
+
+            parameters.Add("NewValue", newValue);
+            parameters.Add("TicketID", this.TicketID);
+
+            ExecuteQuery(query, parameters);
+
+        }
+
+        public void ModifyTitle(string newValue)
+        {
+            string query = "UPDATE Tickets SET Title = @NewValue WHERE TicketID = @TicketID";
+            Modify(query, newValue);
+            this.Title = newValue;
+        }
+
+        public void ModifyDescription(string newValue)
+        {
+            string query = "UPDATE Tickets SET Description = @NewValue WHERE TicketID = @TicketID";
+            Modify(query, newValue);
+            this.Description = newValue;
+        }
     }
 }

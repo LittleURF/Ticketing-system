@@ -8,17 +8,17 @@ namespace Ticketing_System
 {
     public class TicketsDB 
     {
-        private readonly TicketsDBConnection _connectionMaker = new TicketsDBConnection();
+        private readonly ITicketsDBConnection _connectionMaker = new TicketsDBConnection();
 
 
         public Ticket GetTicket(int ticketID)
         {
             string query = "SELECT TicketID, CreatorID, Title, Description, CreationDate, isFinished FROM Tickets WHERE TicketID = @ticketID";
+
             using (var connection = _connectionMaker.GetConnection())
             {
                connection.Open();
                return connection.QuerySingle<Ticket>(query, new { TicketID = ticketID });
-                
             }
          
         }
@@ -56,5 +56,22 @@ namespace Ticketing_System
         }
 
 
+        public void AddTicket(int creatorID, string title, string description)
+        {
+            string query = "INSERT INTO Tickets(CreatorID, Title, Description, CreationDate) VALUES (@CreatorID, @Title, @Description, @CreationDate);";
+
+            DynamicParameters parameters = new DynamicParameters();
+
+            parameters.Add("@CreatorID", creatorID);
+            parameters.Add("@Title", title);
+            parameters.Add("@Description", description);
+            parameters.Add("@CreationDate", DateTime.Now);
+
+            using (var connection = _connectionMaker.GetConnection())
+            {
+                connection.Open();
+                connection.Execute(query, parameters);
+            }
+        }
     }
 }
