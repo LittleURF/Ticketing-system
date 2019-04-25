@@ -8,38 +8,69 @@ namespace Ticketing_System
 {
     class Program
     {
+        public static void ColoredWriteLine(string Message)
+        {
+            ConsoleColor originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(Message);
+            Console.ForegroundColor = originalColor;
+        }
+
         static void Main(string[] args)
         {
+            var db = new TicketsDB();
+            Ticket currentTicket = null;
 
-            Console.WriteLine("Welcome to Ticketing System 1.0\n");
+            Console.WriteLine("Ticketing System 1.0\n");
             while (true)
             {
-                Ticket currentTicket = null;
                 if (currentTicket == null)
-                    Console.WriteLine($"Current ticket is not set");
+                    Console.WriteLine($"Current ticket is not set\n");
                 else
-                    Console.WriteLine($"Current ticket: ID: {currentTicket.TicketID} - {currentTicket.Title}" );
-                Console.WriteLine("Available operations:\n");
-                Console.WriteLine("0. Set current ticket");
+                    Console.WriteLine($"Current ticket: ID: {currentTicket.TicketID} - {currentTicket.Title}\n" );
+                ColoredWriteLine("Available operations:\n");
+                Console.WriteLine("0. Set current ticket(ID)");
                 Console.WriteLine("1. Display a specific ticket(ID)");
                 Console.WriteLine("2. Display all active tickets");
                 Console.WriteLine("3. Display all archived tickets");
                 Console.WriteLine("4. Display all tickets");
                 Console.WriteLine("5. Display employee data(ID)");
 
-                Console.WriteLine("\nCurrent Ticket based:");
+                ColoredWriteLine("\nCurrent Ticket based:");
 
                 Console.WriteLine("6. Set ticket to finished");
                 Console.WriteLine("7. Change ticket's title");
-                Console.WriteLine("8. Change ticket's descriptions");
+                Console.WriteLine("8. Change ticket's descriptions\n");
 
 
-                var userInput = Console.ReadKey(true);
-
-                switch (userInput.KeyChar)
+                var userInputOperation = Console.ReadKey(true);
+                
+                switch (userInputOperation.KeyChar)
                 {
                     case '0':
                         {
+                            ColoredWriteLine("Pass ticket's ID ");
+                            string userInputArgument = Console.ReadLine();
+                            int ticketID = -1;
+
+                            // if input isnt null and is parsable to int.   Shouldnt the out change ticketID even in the if
+                            if (String.IsNullOrWhiteSpace(userInputArgument) && Int32.TryParse(userInputArgument, out ticketID))
+                            {
+                                ColoredWriteLine("\nThe argument is empty or isn't an integer\n");
+                                break;
+                            }
+
+                            Int32.TryParse(userInputArgument, out ticketID);
+                            try
+                            {
+                                currentTicket = db.GetTicket(ticketID);
+                            }
+                            catch (Exception)
+                            {
+                                ColoredWriteLine("\nThere is no ticket with that ID in the database\n");
+                                break;
+                            }
+
                             break;
                         }
                     case '1':
@@ -78,11 +109,12 @@ namespace Ticketing_System
                         }
 
                     default:
-                        Console.WriteLine("You've pressed a wrong character, you can only choose characters seen on the list");
+                        ColoredWriteLine("You've pressed a wrong character, you can only choose characters seen on the list\n");
                             break;
                 }
+                ColoredWriteLine("Operation finished\n\n");
             }
-            var db = new TicketsDB();
+            
             var mainTicket = db.GetTicket(6);
             mainTicket.DisplayTicket();
             // db.RemoveTicket(5);
