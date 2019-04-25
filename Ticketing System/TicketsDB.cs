@@ -13,7 +13,7 @@ namespace Ticketing_System
 
         public Ticket GetTicket(int ticketID)
         {
-            string query = "SELECT TicketID, CreatorID, Title, Description, CreationDate, isFinished FROM Tickets WHERE TicketID = @ticketID";
+            string query = "SELECT TicketID, CreatorID, Title, Description, CreationDate, isFinished FROM Tickets WHERE TicketID = @TicketID";
 
             using (var connection = _connectionMaker.GetConnection())
             {
@@ -21,6 +21,28 @@ namespace Ticketing_System
                return connection.QuerySingle<Ticket>(query, new { TicketID = ticketID });
             }
          
+        }
+
+        public void RemoveTicket(int ticketID)
+        {
+            string query = "DELETE FROM Tickets WHERE TicketID = @TicketID";
+
+            using (var connection = _connectionMaker.GetConnection())
+            {
+                connection.Open();
+                connection.Execute(query, new { TicketID = ticketID });
+            }
+        }
+
+        public Employee GetEmployee(int employeeID)
+        {
+            string query = "SELECT EmployeeID, FirstName, LastName FROM Employees WHERE EmployeeID = @EmployeeID";
+
+            using (var connection = _connectionMaker.GetConnection())
+            {
+                connection.Open();
+                return connection.QuerySingle<Employee>(query, new { EmployeeID = employeeID });
+            }
         }
 
         public List<Ticket> GetOpenTickets()
