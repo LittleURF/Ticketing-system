@@ -56,6 +56,8 @@
     <Compile Include="Ticket.cs" />
     <Compile Include="TicketsDB.cs" />
     <Compile Include="TicketsDBConnection.cs" />
+    <Compile Include="VerifyInput.cs" />
+    <Compile Include="WriteColored.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

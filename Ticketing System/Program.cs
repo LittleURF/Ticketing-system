@@ -6,15 +6,8 @@ using System.Threading.Tasks;
 
 namespace Ticketing_System
 {
-    class Program
+    partial class Program
     {
-        public static void ColoredWriteLine(string Message)
-        {
-            ConsoleColor originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine(Message);
-            Console.ForegroundColor = originalColor;
-        }
 
         static void Main(string[] args)
         {
@@ -28,19 +21,20 @@ namespace Ticketing_System
                     Console.WriteLine($"Current ticket is not set\n");
                 else
                     Console.WriteLine($"Current ticket: ID: {currentTicket.TicketID} - {currentTicket.Title}\n" );
-                ColoredWriteLine("Available operations:\n");
+                WriteColored.ColoredWriteLine("Available operations:\n");
                 Console.WriteLine("0. Set current ticket(ID)");
-                Console.WriteLine("1. Display a specific ticket(ID)");
-                Console.WriteLine("2. Display all active tickets");
-                Console.WriteLine("3. Display all archived tickets");
-                Console.WriteLine("4. Display all tickets");
-                Console.WriteLine("5. Display employee data(ID)");
+                Console.WriteLine("1. Add a ticket(CreatorID, title, description)");
+                Console.WriteLine("2. Display a specific ticket(ID)");
+                Console.WriteLine("3. Display all active tickets");
+                Console.WriteLine("4. Display all archived tickets");
+                Console.WriteLine("5. Display all tickets");
+                Console.WriteLine("6. Display employee data(ID)");
 
-                ColoredWriteLine("\nCurrent Ticket based:");
+                WriteColored.ColoredWriteLine("\nCurrent Ticket based:");
 
-                Console.WriteLine("6. Set ticket to finished");
-                Console.WriteLine("7. Change ticket's title");
-                Console.WriteLine("8. Change ticket's descriptions\n");
+                Console.WriteLine("7. Set ticket to finished");
+                Console.WriteLine("8. Change ticket's title");
+                Console.WriteLine("9. Change ticket's descriptions\n");
 
 
                 var userInputOperation = Console.ReadKey(true);
@@ -49,122 +43,141 @@ namespace Ticketing_System
                 {
                     case '0':
                         {
-                            ColoredWriteLine("Pass ticket's ID ");
-                            string userInputArgument = Console.ReadLine();
-                            int ticketID = -1;
+                            int ticketID = VerifyInput.GetVerifyIdInput();
 
-                            // if input isnt null and is parsable to int.   Shouldnt the out change ticketID even in the if
-                            if (String.IsNullOrWhiteSpace(userInputArgument) && Int32.TryParse(userInputArgument, out ticketID))
-                            {
-                                ColoredWriteLine("\nThe argument is empty or isn't an integer\n");
-                                break;
-                            }
+                            if (!db.CheckTicketIdExists(ticketID))
+                                WriteColored.ColoredWriteLine("Ticket with that ID does not exist in the database");
 
-                            Int32.TryParse(userInputArgument, out ticketID);
-                            try
-                            {
+                            else
                                 currentTicket = db.GetTicket(ticketID);
-                            }
-                            catch (Exception)
-                            {
-                                ColoredWriteLine("\nThere is no ticket with that ID in the database\n");
-                                break;
-                            }
-
+                                
                             break;
                         }
                     case '1':
                         {
+                            var creatorID = VerifyInput.GetVerifyIdInput();
+                            if (!db.CheckEmployeeIdExists(creatorID))
+                            {
+                                WriteColored.ColoredWriteLine("Employee with that ID does not exist in the database");
+                                break;
+                            }
+                            Console.WriteLine("Pass the ticket's title");
+                            var title = Console.ReadLine();
+
+                            Console.WriteLine("Pass the ticket's description");
+                            var description = Console.ReadLine();
+
+                            if (String.IsNullOrWhiteSpace(title) || String.IsNullOrWhiteSpace(description))
+                            {
+                                Console.WriteLine("\nTitle and description fields cannot be empty\n");
+                                break;
+                            }
+
+                            db.AddTicket(creatorID, title, description);
                             break;
                         }
                     case '2':
                         {
+                            var ticket = db.GetTicket(VerifyInput.GetVerifyIdInput());
+                            ticket.DisplayTicket();
                             break;
                         }
-
                     case '3':
                         {
+                            var ticketsActive = db.GetActiveTickets();
+
+                            foreach (var ticket in ticketsActive)
+                            {
+                                ticket.DisplayTicket();
+                            }
                             break;
                         }
 
                     case '4':
                         {
+                            var ticketsArchived = db.GetArchivedTickets();
+
+                            foreach (var ticket in ticketsArchived)
+                            {
+                                ticket.DisplayTicket();
+                            }
                             break;
                         }
+
                     case '5':
                         {
+                            var ticketsAll = db.GetAllTickets();
+
+
+                            foreach (var ticket in ticketsAll)
+                            {
+                                ticket.DisplayTicket();
+                            }
                             break;
                         }
                     case '6':
                         {
+                            var employeeID = VerifyInput.GetVerifyIdInput();
+                            if (!db.CheckEmployeeIdExists(employeeID))
+                            {
+                                WriteColored.ColoredWriteLine("Employee with that ID does not exist in the database");
+                                break;
+                            }
+                                
+                            var employee = db.GetEmployee(employeeID);
+                            employee.DisplayInfo();
                             break;
                         }
                     case '7':
                         {
+                            if(currentTicket == null)
+                            {
+                                WriteColored.ColoredWriteLine("Current ticket is not defined");
+                                break;
+                            }
+
+                            currentTicket.FinishTicket();
+                            currentTicket = null;
                             break;
                         }
                     case '8':
                         {
+                            if (currentTicket == null)
+                            {
+                                WriteColored.ColoredWriteLine("Current ticket is not defined");
+                                break;
+                            }
+
+                            WriteColored.ColoredWriteLine("Pass the new title");
+                            string userInputArgument = Console.ReadLine();
+                            currentTicket.ModifyTitle(userInputArgument);
+
+                            break;
+                        }
+                    case '9':
+                        {
+                            if (currentTicket == null)
+                            {
+                                WriteColored.ColoredWriteLine("Current ticket is not defined");
+                                break;
+                            }
+
+                            Console.WriteLine("Pass the new description");
+                            string userInputArgument = Console.ReadLine();
+                            currentTicket.ModifyDescription(userInputArgument);
                             break;
                         }
 
                     default:
-                        ColoredWriteLine("You've pressed a wrong character, you can only choose characters seen on the list\n");
+                        WriteColored.ColoredWriteLine("You've pressed a wrong character, you can only choose characters seen on the list\n");
                             break;
                 }
-                ColoredWriteLine("Operation finished\n\n");
+                WriteColored.ColoredWriteLine("\nOperation finished\n\n");
             }
-            
-            var mainTicket = db.GetTicket(6);
-            mainTicket.DisplayTicket();
-            // db.RemoveTicket(5);
-            // mainTicket.ModifyDescription("I cant play when connected to wi-fi");
-            // mainTicket.FinishTicket();
-
-            var openTickets = db.GetOpenTickets();
-            foreach (var ticket in openTickets)
-            {
-                ticket.DisplayTicket();
-            }
-
-            Console.WriteLine("\n" + mainTicket.GetCreatorName() + "\n\n");
-
-            //var archivedTickets = db.GetArchivedTickets();
-
-            //foreach (var ticket in archivedTickets)
-            //{
-            //    ticket.DisplayTicket();
-            //}
-
-            //Console.WriteLine("\n\n\n");
-            //var allTickets = db.GetAllTickets();
-
-            //foreach (var ticket in allTickets)
-            //{
-            //    ticket.DisplayTicket();
-            //}
-
-            var hubson = db.GetEmployee(1);
-            
-            var hubsonTickets = hubson.GetAllCreatedTickets();
-
-            foreach (var ticket in hubsonTickets)
-            {
-                ticket.DisplayTicket();
-            }
-
-
-            // db.AddTicket(1, "Fix connection issues", "I cant get the damn app to open on my tablet");
-
-
 
 
             /* Functionalities to add:
-             * - create a small console menu loop to operate the thing? with arguments passed from the user
-             * 
              * - (?) Make some TicketsDBConnection methods to inherit? the using statement is god damn everywhere()
-             * 
-             * actualy creating a ticket in C# instead is gonna screw everything up, make it impossible to create one just liek that?
              * 
              * 
              */

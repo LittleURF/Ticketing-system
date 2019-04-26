@@ -13,7 +13,10 @@ namespace Ticketing_System
 
         private readonly ITicketsDBConnection _connectionMaker = new TicketsDBConnection();
 
-
+        public void DisplayInfo()
+        {
+            Console.WriteLine($"Employee ID: {EmployeeID} - {GetFullName()}");
+        }
         public string GetFullName()
         {
             return FirstName + " " + LastName;

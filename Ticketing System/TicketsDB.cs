@@ -45,7 +45,7 @@ namespace Ticketing_System
             }
         }
 
-        public List<Ticket> GetOpenTickets()
+        public List<Ticket> GetActiveTickets()
         {
             string query = "SELECT TicketID, CreatorID, Title, Description, CreationDate, isFinished FROM Tickets";
 
@@ -71,7 +71,7 @@ namespace Ticketing_System
         public List<Ticket> GetAllTickets()
         {
             var allTickets = new List<Ticket>();
-            allTickets.AddRange(GetOpenTickets());
+            allTickets.AddRange(GetActiveTickets());
             allTickets.AddRange(GetArchivedTickets());
 
             return allTickets;
@@ -93,6 +93,32 @@ namespace Ticketing_System
             {
                 connection.Open();
                 connection.Execute(query, parameters);
+            }
+        }
+
+        public bool CheckTicketIdExists(int ticketID)
+        {
+            try
+            {
+                var ticket = GetTicket(ticketID);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool CheckEmployeeIdExists(int employeeID)
+        {
+            try
+            {
+                var employee = GetEmployee(employeeID);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }
