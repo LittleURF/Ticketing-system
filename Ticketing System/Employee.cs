@@ -51,13 +51,5 @@ namespace Ticketing_System
             activeTickets.AddRange(archivedTickets);
             return activeTickets;
         }
-
-
-
-        public void ShowFinishedTickets()
-        {
-            // Gotta make FinishedBy in the Database
-            throw new NotImplementedException();
-        }
     }
 }

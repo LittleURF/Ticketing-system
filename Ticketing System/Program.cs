@@ -15,6 +15,7 @@ namespace Ticketing_System
             Ticket currentTicket = null;
 
             Console.WriteLine("Ticketing System 1.0\n");
+
             while (true)
             {
                 if (currentTicket == null)
